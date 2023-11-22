@@ -1,0 +1,208 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/adityapawar327/lgmvip/blob/main/ChatBot\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "import nltk\n",
+        "from nltk.tokenize import word_tokenize\n",
+        "from nltk.corpus import stopwords\n",
+        "\n",
+        "nltk.download('punkt')\n",
+        "nltk.download('stopwords')\n",
+        "\n",
+        "# Define mock phone data with more products and details, including reviews\n",
+        "phone_data = {\n",
+        "    'iphone': {\n",
+        "        'price': 999,\n",
+        "        'description': 'The latest iPhone model with advanced features.',\n",
+        "        'reviews': [\n",
+        "            \"Great phone with an amazing camera!\",\n",
+        "            \"High-quality build and performance.\",\n",
+        "        ]\n",
+        "    },\n",
+        "    'samsung': {\n",
+        "        'price': 799,\n",
+        "        'description': 'A popular Android phone with a large display.',\n",
+        "        'reviews': [\n",
+        "            \"Excellent screen and battery life.\",\n",
+        "            \"Good value for money.\",\n",
+        "        ]\n",
+        "    },\n",
+        "    'google pixel': {\n",
+        "        'price': 899,\n",
+        "        'description': 'Google Pixel is known for its great camera and pure Android experience.',\n",
+        "        'reviews': [\n",
+        "            \"Best Android camera on the market.\",\n",
+        "            \"Clean Android experience with timely updates.\",\n",
+        "        ]\n",
+        "    },\n",
+        "    'oneplus': {\n",
+        "        'price': 699,\n",
+        "        'description': 'OnePlus phones offer high-end features at an affordable price.',\n",
+        "        'reviews': [\n",
+        "            \"Fast and smooth performance.\",\n",
+        "            \"Great value for money.\",\n",
+        "        ]\n",
+        "    },\n",
+        "    'xiaomi': {\n",
+        "        'price': 599,\n",
+        "        'description': 'Xiaomi phones combine affordability with cutting-edge technology.',\n",
+        "        'reviews': [\n",
+        "            \"Budget-friendly with impressive specs.\",\n",
+        "            \"MIUI interface offers lots of customization.\",\n",
+        "        ]\n",
+        "    },\n",
+        "    'huawei': {\n",
+        "        'price': 749,\n",
+        "        'description': 'Huawei phones feature innovative hardware and software.',\n",
+        "        'reviews': [\n",
+        "            \"Impressive camera performance.\",\n",
+        "            \"EMUI provides a unique Android experience.\",\n",
+        "        ]\n",
+        "    },\n",
+        "    'motorola': {\n",
+        "        'price': 499,\n",
+        "        'description': 'Motorola offers a range of Android smartphones for different needs.',\n",
+        "        'reviews': [\n",
+        "            \"Stock Android experience with timely updates.\",\n",
+        "            \"Good build quality.\",\n",
+        "        ]\n",
+        "    },\n",
+        "    # Add more phone models and details here\n",
+        "}\n",
+        "\n",
+        "# Function to extract relevant keywords from user input\n",
+        "def extract_keywords(user_input):\n",
+        "    # Tokenize the user input\n",
+        "    tokens = word_tokenize(user_input.lower())\n",
+        "    # Remove stopwords\n",
+        "    keywords = [word for word in tokens if word not in stopwords.words('english')]\n",
+        "    return keywords\n",
+        "\n",
+        "# Function to get phone details, including reviews\n",
+        "def get_phone_details(model):\n",
+        "    if model in phone_data:\n",
+        "        details = phone_data[model]\n",
+        "        return f\"Price: ${details['price']}\\nDescription: {details['description']}\\nReviews: {', '.join(details['reviews'])}\"\n",
+        "    else:\n",
+        "        return \"Sorry, we don't have information about that phone model.\"\n",
+        "\n",
+        "# Function to get the lowest price among all phones\n",
+        "def get_lowest_price():\n",
+        "    lowest_price = min(phone_data.values(), key=lambda x: x['price'])\n",
+        "    return f\"Lowest Price: ${lowest_price['price']} ({[model for model, details in phone_data.items() if details == lowest_price][0]})\"\n",
+        "\n",
+        "# Function to get the highest price among all phones\n",
+        "def get_highest_price():\n",
+        "    highest_price = max(phone_data.values(), key=lambda x: x['price'])\n",
+        "    return f\"Highest Price: ${highest_price['price']} ({[model for model, details in phone_data.items() if details == highest_price][0]})\"\n",
+        "\n",
+        "# Main chat loop\n",
+        "while True:\n",
+        "    user_input = input(\"You: \").lower()\n",
+        "\n",
+        "    if user_input == 'exit':\n",
+        "        break\n",
+        "\n",
+        "    keywords = extract_keywords(user_input)\n",
+        "\n",
+        "    if 'price' in keywords:\n",
+        "        for phone_model, details in phone_data.items():\n",
+        "            if phone_model in user_input:\n",
+        "                print(f\"Price of {phone_model}: ${details['price']}\")\n",
+        "                break\n",
+        "        else:\n",
+        "            lowest_price = get_lowest_price()\n",
+        "            highest_price = get_highest_price()\n",
+        "            print(lowest_price)\n",
+        "            print(highest_price)\n",
+        "    else:\n",
+        "        for phone_model, details in phone_data.items():\n",
+        "            if phone_model in user_input:\n",
+        "                print(get_phone_details(phone_model))\n",
+        "                break\n",
+        "        else:\n",
+        "            print(\"I'm sorry, I couldn't understand your request.\")\n",
+        "\n",
+        "print(\"Goodbye!\")"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "Og9zHbjOMjYb",
+        "outputId": "72ecf09e-27e2-4951-eacc-54d42a5f3cfe"
+      },
+      "execution_count": null,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stderr",
+          "text": [
+            "[nltk_data] Downloading package punkt to /root/nltk_data...\n",
+            "[nltk_data]   Package punkt is already up-to-date!\n",
+            "[nltk_data] Downloading package stopwords to /root/nltk_data...\n",
+            "[nltk_data]   Package stopwords is already up-to-date!\n"
+          ]
+        },
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "You: What's the price of an iPhone?\n",
+            "Price of iphone: $999\n",
+            "You: Tell me more about Samsung.\n",
+            "Price: $799\n",
+            "Description: A popular Android phone with a large display.\n",
+            "Reviews: Excellent screen and battery life., Good value for money.\n",
+            "You: How are the reviews for Google Pixel?\n",
+            "Price: $899\n",
+            "Description: Google Pixel is known for its great camera and pure Android experience.\n",
+            "Reviews: Best Android camera on the market., Clean Android experience with timely updates.\n",
+            "You: Give me details about OnePlus\n",
+            "Price: $699\n",
+            "Description: OnePlus phones offer high-end features at an affordable price.\n",
+            "Reviews: Fast and smooth performance., Great value for money.\n",
+            "You: Give me the lowest price\n",
+            "Lowest Price: $499 (motorola)\n",
+            "Highest Price: $999 (iphone)\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [],
+      "metadata": {
+        "id": "TG81-ac8PigB"
+      },
+      "execution_count": null,
+      "outputs": []
+    }
+  ]
+}
